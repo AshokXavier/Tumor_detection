@@ -449,6 +449,8 @@ def api_chat_olmo():
             "mri": "MRI stands for Magnetic Resonance Imaging. It uses strong magnets and radio waves to create detailed images of the brain without using radiation.",
             "glioma": "A Glioma is a type of tumor that starts in the glial cells of the brain or spine. They are the most common type of primary brain tumor.",
             "meningioma": "A Meningioma is a tumor that arises from the meninges — the membranes that surround your brain and spinal cord. They are usually slow-growing."
+            "accuracy": "Our 2D model has a validation accuracy of 98.5%, while the 3D segmentation achieves a Dice Score of 0.89.",
+
         }
 
         # Logic: Check specific system keywords first, then general conversation
