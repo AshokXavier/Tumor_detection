@@ -186,7 +186,15 @@
 
         try {
             const response = await fetch('/api/mesh', { method: 'POST', body: formData });
-            const data = await response.json();
+            let data;
+            const text = await response.text();
+
+            try {
+                data = JSON.parse(text);
+            } catch (jsonErr) {
+                console.error("JSON Parse Error:", jsonErr);
+                throw new Error("Server returned invalid response: " + text.substring(0, 100));
+            }
 
             if (data.error) {
                 container.innerHTML = `<div style="text-align:center;padding-top:180px;color:#ef4444;">${data.error}</div>`;
@@ -245,7 +253,7 @@
             }
         } catch (e) {
             console.error("3D Error:", e);
-            container.innerHTML = `<div style="text-align:center;padding-top:180px;color:#ef4444;">Error: Connection to Mesh API Failed</div>`;
+            container.innerHTML = `<div style="text-align:center;padding-top:180px;color:#ef4444;">Error: ${e.message}</div>`;
         }
     };
 

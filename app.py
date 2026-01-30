@@ -105,12 +105,12 @@ def predict_3d():
         metrics = calculate_tumor_metrics(segmentation, voxel_spacing=voxel_spacing)
         
         # 4. Visualization
-        processed_volume = preprocess_volume_3d(filepath)
+        processed_volume, crop_coords = preprocess_volume_3d(filepath, return_coords=True)
         # Adapt for 3-channel models
         if models['3d'].input_shape[-1] == 3 and processed_volume.shape[-1] == 1:
             processed_volume = np.repeat(processed_volume, 3, axis=-1)
             
-        slice_img_base64, max_slice = generate_slice_visualization(processed_volume, segmentation)
+        slice_img_base64, max_slice = generate_slice_visualization(filepath, segmentation, crop_coords)
         
         return jsonify({
             'metrics': metrics,
@@ -162,6 +162,7 @@ def api_mesh():
         except:
             spacing = [1.0, 1.0, 1.0]
             
+        print("DEBUG: Generating Mesh...")
         # segmentation shape: (1, 128, 128, 128, 4)
         # Argmax to get 3D mask
         mask_3d = np.argmax(segmentation[0], axis=-1) # (128, 128, 128)
@@ -173,8 +174,11 @@ def api_mesh():
         obj_content = generate_tumor_mesh_obj(mask_3d, volume=vol_for_shell)
         
         if obj_content is None:
+            print("DEBUG: Mesh Generation returned None")
             return jsonify({'error': 'No tumor detected for 3D reconstruction'}), 404
             
+        print(f"DEBUG: Mesh Generated, size {len(obj_content)} bytes")
+        
         return jsonify({
             'obj': obj_content,
             'spacing': spacing
@@ -254,13 +258,13 @@ def api_report_3d():
         # Generate Visualization Image
         try:
             from utils import generate_slice_visualization
-            processed_vol = preprocess_volume_3d(filepath)
+            processed_vol, crop_coords = preprocess_volume_3d(filepath, return_coords=True)
             
             # Channel handling
             if models['3d'].input_shape[-1] == 3 and processed_vol.shape[-1] == 1:
                 processed_vol = np.repeat(processed_vol, 3, axis=-1)
                 
-            b64_str, _ = generate_slice_visualization(processed_vol, segmentation)
+            b64_str, _ = generate_slice_visualization(filepath, segmentation, crop_coords)
             header, encoded = b64_str.split(',', 1)
             data = base64.b64decode(encoded)
             

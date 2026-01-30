@@ -78,10 +78,11 @@ def compute_z_score(image):
     image_z[image > 0] = (image[image > 0] - mean) / std
     return image_z
 
-def preprocess_volume_3d(nifti_path, target_shape=None):
+def preprocess_volume_3d(nifti_path, target_shape=None, return_coords=False):
     """
     Loads and preprocesses a NIfTI volume for the 3D model.
     Matches training code: Z-score -> Center Crop (128x128x128).
+    Returns data, and optionally (start_D, start_H, start_W).
     """
     try:
         nifti = nib.load(nifti_path)
@@ -91,9 +92,9 @@ def preprocess_volume_3d(nifti_path, target_shape=None):
         data = compute_z_score(data)
         
         # 2. Center Crop to 128x128x128
-        # Training code used specific indices [58:186, 58:186, 14:142] for (240,240,155) input.
-        # We'll implement a robust center crop to handling varying inputs.
         target_D, target_H, target_W = 128, 128, 128
+        
+        start_D, start_H, start_W = 0, 0, 0
         
         if len(data.shape) == 3:
             src_D, src_H, src_W = data.shape
@@ -110,26 +111,163 @@ def preprocess_volume_3d(nifti_path, target_shape=None):
             
             crop = data[start_D:end_D, start_H:end_H, start_W:end_W]
             
-            # Pad if result is smaller than target (e.g. input was smaller than 128)
-            # Create a 128x128x128 placeholder
+            # Pad if result is smaller than target
             final_data = np.zeros((target_D, target_H, target_W), dtype=np.float32)
-            
-            # Insert crop into center of placeholder
-            # (Simplified: just insert at 0,0,0 if standard crop, or center it?)
-            # Let's simple insert at 0,0,0 to fill.
-            # Actually, training code produces exactly 128x128x128.
-            # If we cropped less, we pad.
             d_len, h_len, w_len = crop.shape
             final_data[:d_len, :h_len, :w_len] = crop
             data = final_data
-            
+        
         data = np.expand_dims(data, axis=0) 
         data = np.expand_dims(data, axis=-1)
         
+        if return_coords:
+            return data, (start_D, start_H, start_W)
         return data
     except Exception as e:
         print(f"Error processing 3D volume: {e}")
         raise e
+
+# ... (Predict functions remain same)
+
+# ... (Calculate metrics remains same)
+
+def generate_slice_visualization(original_vol_path, segmentation_pred, crop_coords=(0,0,0)):
+    """
+    Generates a High-Quality visualization using the original volume resolution.
+    Overlays the 128x128 mask onto the full-size original slice.
+    """
+    from matplotlib.colors import ListedColormap
+    
+    # 1. Load Original Volume
+    nifti = nib.load(original_vol_path)
+    orig_data = nifti.get_fdata() # (D, H, W) or (H, W, D)? Nibabel usually (X, Y, Z) -> (H, W, D)
+    # Let's verify nibabel orientation. 
+    # Usually it matches the shape used in preprocessing.
+    # Preprocessing treated it as (D, H, W)? 
+    # Wait, in line 98: `src_D, src_H, src_W = data.shape`.
+    # And we crop `start_D:end_D`.
+    # BUT, typically medical images are (H, W, Depth).
+    # If the code assumes (D, H, W), that implies the 0-th dimension is Depth.
+    # Let's handle consistent with preprocessing logic.
+    
+    # Pred shape: (1, 128, 128, 128, 4)
+    mask_crop = np.argmax(segmentation_pred[0], axis=-1) # (128, 128, 128)
+    
+    # 2. Find Max Tumor Slice in the CROP
+    # This ensures we show the slice where the model actually found something.
+    tumor_pixels_per_slice = np.sum(mask_crop > 0, axis=(1, 2)) # Sum over H, W? 
+    # WAIT. In preprocessing: `crop = data[start_D:end_D, start_H:end_H, start_W:end_W]`
+    # And typically standard orientation is (H, W, D).
+    # If user used `src_D, src_H, src_W = data.shape` and `start_D` corresponds to index 0...
+    # Then index 0 is the one we chopped for "Depth"? 
+    # If `tumor_pixels_per_slice` calc uses axis (0, 1), it assumes axis 2 is depth.
+    # Let's match typical visualization: Axis 2 is Depth.
+    # If Preprocessing treated axis 0 as Depth?
+    # Let's stick to the convention used in `generate_slice_visualization` previously:
+    # `tumor_pixels_per_slice = np.sum(mask_data > 0, axis=(0, 1))` implies Axis 2 is slices.
+    # If `preprocess` sliced all dims symmetrically, it's fine.
+    
+    # In `preprocess`: `crop = data[start_D:..., start_H:..., start_W:...]`
+    # So `start_D` is offset for Axis 0.
+    # `start_H` is offset for Axis 1.
+    # `start_W` is offset for Axis 2.
+    
+    # If Axis 2 is the slice dim, then we need `start_W` (offset for axis 2).
+    # Let's assume standard (H, W, D).
+    # So crop offset is `crop_coords[2]`.
+    
+    start_0, start_1, start_2 = crop_coords
+    
+    # Check orientation of mask for max slice
+    # Previous code: `tumor_pixels_per_slice = np.sum(mask_data > 0, axis=(0, 1))` (Summing H,W)
+    # So max_slice_idx is along Axis 2.
+    best_slice_crop_idx = np.argmax(np.sum(mask_crop > 0, axis=(0, 1)))
+    
+    # If empty
+    if np.max(mask_crop) == 0:
+        best_slice_crop_idx = mask_crop.shape[2] // 2
+        
+    # Mapping to Original Z
+    # Since we cropped `data[:, :, start_2:end_2]`, the original index is:
+    original_slice_idx = start_2 + best_slice_crop_idx
+    
+    # Clamp to bounds
+    if original_slice_idx >= orig_data.shape[2]:
+         original_slice_idx = orig_data.shape[2] - 1
+         
+    # 3. Extract High-Res Background Slice
+    # Shape (H, W)
+    bg_slice = orig_data[:, :, original_slice_idx]
+    
+    # Rotate 90 deg if needed? Standard NIfTI is usually rotated.
+    # Let's rotate 90 deg counter-clockwise to match typical "upright" brain view if needed.
+    # Often required for nibabel data. Sticking to raw for now, or maybe rot90 for better UX?
+    # Let's apply np.rot90(bg_slice) to see if it fixes "squashed" look?
+    # The user mentioned "squashed".
+    # Often standard (H, W) needs rotation.
+    bg_slice = np.rot90(bg_slice) 
+    
+    # 4. Reconstruct Full-Size Mask
+    # Create empty mask same size as original slice
+    full_mask_slice = np.zeros_like(bg_slice, dtype=np.uint8) # (H, W) (rotated)
+    
+    # Extract the crop slice from the 3D mask
+    mask_slice_crop = mask_crop[:, :, best_slice_crop_idx] # (128, 128)
+    
+    # Rotate mask slice too!
+    mask_slice_crop = np.rot90(mask_slice_crop)
+    
+    # Place it back?
+    # Wait, if we rotate, the coordinates change.
+    # Let's Place THEN Rotate. simpler.
+    
+    full_mask_flat = np.zeros((orig_data.shape[0], orig_data.shape[1]), dtype=np.uint8)
+    
+    # Insert crop
+    # Crop coords: start_0 (H), start_1 (W)
+    # Mask usage?
+    # If crop was `data[start_0:..., start_1:...]`
+    # Then we place mask at `[start_0:..., start_1:...]`
+    h_crop, w_crop = mask_crop.shape[0], mask_crop.shape[1] # 128, 128
+    
+    # Handle padding cases (if original was smaller than 128) - unlikely for brain MRI
+    # But assume we just overwrite.
+    end_0 = min(start_0 + h_crop, full_mask_flat.shape[0])
+    end_1 = min(start_1 + w_crop, full_mask_flat.shape[1])
+    
+    # Need to slice the mask if it goes out of bounds (padding case)
+    # But usually 128 is smaller.
+    
+    full_mask_flat[start_0:end_0, start_1:end_1] = mask_slice_crop[:(end_0-start_0), :(end_1-start_1)]
+    
+    # Now Rotate Both for display
+    bg_slice_vis = np.rot90(orig_data[:, :, original_slice_idx])
+    mask_slice_vis = np.rot90(full_mask_flat)
+    
+    # 5. Plotting
+    plt.figure(figsize=(10, 10), dpi=150) # High quality
+    
+    plt.imshow(bg_slice_vis, cmap='gray', interpolation='bicubic')
+    
+    # Colors
+    colors = [
+        (0, 0, 0, 0),       # Transparent
+        (6/255, 182/255, 212/255, 0.7),     # Cyan
+        (234/255, 179/255, 8/255, 0.7),     # Yellow
+        (239/255, 68/255, 68/255, 0.7)      # Red
+    ]
+    cmap = ListedColormap(colors)
+    
+    plt.imshow(mask_slice_vis, cmap=cmap, interpolation='nearest', vmin=0, vmax=3)
+    plt.axis('off')
+    
+    buf = io.BytesIO()
+    plt.savefig(buf, format='png', bbox_inches='tight', pad_inches=0, transparent=True)
+    plt.close()
+    buf.seek(0)
+    
+    img_str = base64.b64encode(buf.getvalue()).decode('utf-8')
+    return f"data:image/png;base64,{img_str}", best_slice_crop_idx
 
 def predict_2d_model(model, image_path):
     """
