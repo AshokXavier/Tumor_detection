@@ -168,10 +168,8 @@ def api_mesh():
         mask_3d = np.argmax(segmentation[0], axis=-1) # (128, 128, 128)
         
         from utils_mesh import generate_tumor_mesh_obj
-        # Pass the original processed volume (channel 0) for Shell generation
-        # processed_volume is (1, 128, 128, 128, C)
-        vol_for_shell = processed_volume[0, ..., 0] 
-        obj_content = generate_tumor_mesh_obj(mask_3d, volume=vol_for_shell)
+        # Remove shell generation to prevent OOM/timeouts
+        obj_content = generate_tumor_mesh_obj(mask_3d)
         
         if obj_content is None:
             print("DEBUG: Mesh Generation returned None")
@@ -330,7 +328,8 @@ def api_progress():
             
             results.append({
                 'filename': filename,
-                'total_volume_cm3': metrics['total_volume_cm3'],
+                'total_volume_cm3': metrics.get('total_volume_cm3', 0),
+                'total_volume_mm3': metrics.get('total_volume_mm3', 0),
                 'metrics': metrics
             })
             

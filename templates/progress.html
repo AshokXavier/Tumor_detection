@@ -125,7 +125,11 @@
         const ctx = document.getElementById('progressChart').getContext('2d');
 
         const labels = results.map(r => r.filename);
-        const values = results.map(r => r.total_volume_cm3);
+        const values = results.map(r => {
+            if (r.total_volume_cm3 !== undefined) return r.total_volume_cm3;
+            if (r.total_volume_mm3 !== undefined) return (r.total_volume_mm3 / 1000).toFixed(2);
+            return 0;
+        });
 
         if (chart) chart.destroy();
 
@@ -175,10 +179,23 @@
             let changeHtml = '--';
             let statusHtml = '<span class="status-badge" style="background:#888;">Baseline</span>';
 
+            // Safe Access Helper
+            const getVol = (item) => {
+                if (item.total_volume_cm3 !== undefined) return item.total_volume_cm3;
+                if (item.total_volume_mm3 !== undefined) return item.total_volume_mm3 / 1000;
+                return 0;
+            };
+
+            const curr = getVol(res);
+
             if (i > 0) {
-                const prev = results[i - 1].total_volume_cm3;
-                const curr = res.total_volume_cm3;
-                const change = ((curr - prev) / prev) * 100;
+                const prev = getVol(results[i - 1]);
+
+                let change = 0;
+                if (prev > 0) {
+                    change = ((curr - prev) / prev) * 100;
+                }
+
                 const sign = change > 0 ? '+' : '';
                 const color = change > 0 ? '#ef4444' : '#10b981';
                 changeHtml = `<span style="color:${color}">${sign}${change.toFixed(2)}%</span>`;
@@ -192,7 +209,7 @@
                 <tr>
                     <td>#${i + 1}</td>
                     <td>${res.filename}</td>
-                    <td>${res.total_volume_cm3.toLocaleString()}</td>
+                    <td>${curr.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
                     <td>${changeHtml}</td>
                     <td>${statusHtml}</td>
                 </tr>

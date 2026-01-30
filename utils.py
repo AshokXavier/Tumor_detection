@@ -269,6 +269,12 @@ def calculate_tumor_metrics(segmentation_pred, voxel_spacing=(1.0, 1.0, 1.0)):
     edema_val = np.sum(mask == 2) * voxel_volume_mm3
     enhancing_val = np.sum(mask == 3) * voxel_volume_mm3
     
+    # RAW mm3
+    metrics['necrotic_mm3'] = int(necrotic_val)
+    metrics['edema_mm3'] = int(edema_val)
+    metrics['enhancing_mm3'] = int(enhancing_val)
+    metrics['total_volume_mm3'] = int(necrotic_val + edema_val + enhancing_val)
+
     # Convert to cm3 (1 cm3 = 1000 mm3)
     metrics['necrotic_cm3'] = float(f"{necrotic_val / 1000:.2f}")
     metrics['edema_cm3'] = float(f"{edema_val / 1000:.2f}")
