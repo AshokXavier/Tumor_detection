@@ -43,15 +43,15 @@
         <!-- Card 3 -->
         <div class="glass card" style="padding: 2rem; border-radius: 16px; transition: transform 0.3s ease;">
             <div class="icon-bg"
-                style="width: 60px; height: 60px; background: rgba(16, 185, 129, 0.1); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem;">
-                <i class="fa-solid fa-layer-group" style="font-size: 1.5rem; color: #10b981;"></i>
+                style="width: 60px; height: 60px; background: rgba(5, 182, 212, 0.1); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem;">
+                <i class="fa-solid fa-chart-line" style="font-size: 1.5rem; color: #06b6d4;"></i>
             </div>
-            <h3 style="margin-bottom: 0.5rem;">Slice Comparison</h3>
+            <h3 style="margin-bottom: 0.5rem;">Progress Tracking</h3>
             <p style="color: var(--text-muted); margin-bottom: 1.5rem;">
-                Compare max tumor burden slices from two different MRI scans side-by-side.
+                Track tumor growth or regression over multiple visits using longitudinal analysis.
             </p>
-            <a href="{{ url_for('compare') }}" class="btn btn-primary">Compare Scans <i class="fa-solid fa-arrow-right"
-                    style="margin-left: 0.5rem;"></i></a>
+            <a href="{{ url_for('progress') }}" class="btn btn-primary">Track Progress <i
+                    class="fa-solid fa-arrow-right" style="margin-left: 0.5rem;"></i></a>
         </div>
     </div>
 </section>
