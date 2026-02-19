@@ -7,7 +7,7 @@
         Advanced Brain Tumor Analysis
     </h1>
     <p style="font-size: 1.2rem; color: var(--text-muted); max-width: 600px; margin-bottom: 3rem;">
-        Using advanced deep learning models for accurate tumor classification and 3D volumetric segmentation.
+        Using advanced deep learning models for accurate tumor classification and volumetric segmentation.
     </p>
 
     <div class="features-grid"
@@ -18,7 +18,7 @@
                 style="width: 60px; height: 60px; background: rgba(59, 130, 246, 0.1); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem;">
                 <i class="fa-solid fa-image" style="font-size: 1.5rem; color: var(--primary);"></i>
             </div>
-            <h3 style="margin-bottom: 0.5rem;">2D Classification</h3>
+            <h3 style="margin-bottom: 0.5rem;">Classification</h3>
             <p style="color: var(--text-muted); margin-bottom: 1.5rem;">
                 Upload MRI slices to classify tumor types using our Ensemble Model.
             </p>
@@ -32,9 +32,9 @@
                 style="width: 60px; height: 60px; background: rgba(139, 92, 246, 0.1); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem;">
                 <i class="fa-solid fa-cubes" style="font-size: 1.5rem; color: var(--secondary);"></i>
             </div>
-            <h3 style="margin-bottom: 0.5rem;">3D Segmentation</h3>
+            <h3 style="margin-bottom: 0.5rem;">Segmentation</h3>
             <p style="color: var(--text-muted); margin-bottom: 1.5rem;">
-                Upload 3D NIfTI volumes for full segmentation and tumor size calculation.
+                Upload NIfTI volumes for full segmentation and tumor size calculation.
             </p>
             <a href="{{ url_for('segment') }}" class="btn btn-primary">Start Segmentation <i
                     class="fa-solid fa-arrow-right" style="margin-left: 0.5rem;"></i></a>
