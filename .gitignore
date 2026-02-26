@@ -21,7 +21,4 @@ static/results/*
 !static/results/.gitkeep
 
 # Models (Downloaded at runtime now)
-models/*.keras
-models/*.h5
-models/*.nii
-models/*.nii.gz
+models/

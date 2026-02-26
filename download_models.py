@@ -2,7 +2,7 @@ import os
 from huggingface_hub import hf_hub_download
 
 # Configuration
-REPO_ID = "tomjo10/tumor_vision_models"
+REPO_ID = "AshokXavier/tumor_vision_models"
 MODEL_DIR = "models"
 MODELS = [
     "ensemble_2d.keras",
