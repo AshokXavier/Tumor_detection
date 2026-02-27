@@ -1,15 +1,15 @@
 {% extends "base.html" %}
 
-{% block title %}2D Classification - TumorVision{% endblock %}
+{% block title %}Detection - TumorVision{% endblock %}
 
 {% block content %}
-<div class="glass" style="padding: 3rem; border-radius: 20px; max-width: 800px; margin: 0 auto; margin-top: 2rem;">
-    <h2 style="margin-bottom: 2rem; text-align: center;">MRI Classification</h2>
+<div class="card" style="padding: 40px; border-radius: 16px; max-width: 800px; margin: 0 auto; margin-top: 2rem;">
+    <h2 style="margin-bottom: 2rem; text-align: center; color: var(--text-main);">Upload MRI Scan</h2>
 
     <form id="classifyForm">
         <div class="upload-area" id="dropArea" onclick="document.getElementById('fileInput').click()">
             <i class="fa-solid fa-cloud-arrow-up upload-icon"></i>
-            <p style="font-size: 1.2rem; margin-bottom: 0.5rem;">Drag & Drop MRI Image</p>
+            <p style="font-size: 1.2rem; margin-bottom: 0.5rem; font-weight: 500;">Drag & Drop MRI Image Here</p>
             <p style="color: var(--text-muted);">or <span
                     style="color: var(--primary); text-decoration: underline;">browse files</span></p>
             <input type="file" name="file" id="fileInput" accept="image/*"
@@ -18,33 +18,44 @@
 
         <div id="previewContainer" style="text-align: center; margin-bottom: 2rem; display: none;">
             <img id="imagePreview" src="" alt="Preview"
-                style="max-width: 100%; max-height: 300px; border-radius: 10px; border: 2px solid var(--border);">
-            <p id="fileName" style="margin-top: 0.5rem; color: var(--text-muted);"></p>
+                style="max-width: 100%; max-height: 300px; border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+            <p id="fileName" style="margin-top: 0.5rem; color: var(--text-muted); font-weight: 500;"></p>
         </div>
 
         <div style="text-align: center;">
-            <button type="submit" class="btn btn-primary" id="analyzeBtn" disabled>Analyze Image</button>
+            <button type="submit" class="btn btn-primary" id="analyzeBtn" disabled
+                style="padding: 1rem 2.5rem; font-size: 1.1rem; border-radius: 14px;">Start Detection</button>
         </div>
     </form>
 
     <div class="loader" id="loader"></div>
 
-    <div id="resultContainer" class="glass"
-        style="margin-top: 2rem; padding: 2rem; border-radius: 12px; display: none; text-align: center; background: rgba(59, 130, 246, 0.1);">
-        <h3 style="color: var(--text-main); margin-bottom: 1rem;">Analysis Result</h3>
-        <p style="font-size: 1.5rem; font-weight: 700;">
-            Prediction: <span id="predictionResult" style="color: var(--accent);">--</span>
-        </p>
-        <p style="color: var(--text-muted); margin-top: 0.5rem;">Confidence: <span id="confidenceResult">--</span></p>
+    <div id="resultContainer" class="card"
+        style="margin-top: 2rem; padding: 2rem; border-radius: 16px; display: none; text-align: center; border: 1px solid var(--border); box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
+        <h3 style="color: var(--text-main); margin-bottom: 1.5rem;">Prediction Result</h3>
+
+        <div style="margin-bottom: 1.5rem;">
+            <span id="predictionResult" style="font-size: 1.1rem;">--</span>
+        </div>
+
+        <div style="text-align: left; max-width: 400px; margin: 0 auto;">
+            <div
+                style="display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-weight: 500; color: var(--text-muted);">
+                <span>Confidence</span>
+                <span id="confidenceResult">--</span>
+            </div>
+            <div class="progress-container">
+                <div id="confidenceBar" class="progress-bar"></div>
+            </div>
+        </div>
     </div>
 
     <div style="text-align: center; margin-top: 3rem; display: flex; gap: 1rem; justify-content: center;">
-        <a href="/" class="btn btn-primary" style="background: transparent; border: 1px solid var(--primary);">Upload
-            Another</a>
+        <button type="button" class="btn btn-secondary" onclick="window.location.reload()">Upload Another</button>
 
-        <button id="downloadReportBtn" class="btn btn-primary"
-            style="background: #ef4444; border: none; display: none;">
-            <i class="fa-solid fa-file-pdf"></i> &nbsp;Download Medical Report
+        <button id="downloadReportBtn" class="btn"
+            style="background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border); color: var(--text-main); display: none;">
+            <i class="fa-solid fa-file-pdf" style="color: var(--danger-text);"></i> &nbsp;Download Medical Report
         </button>
     </div>
 </div>

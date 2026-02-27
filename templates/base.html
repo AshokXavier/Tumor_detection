@@ -4,11 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Brain Tumor AI{% endblock %}</title>
+    <title>{% block title %}TumorVision{% endblock %}</title>
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <!-- Icons -->
@@ -19,15 +19,15 @@
     <div class="app-container">
         <nav class="navbar">
             <div class="logo">
-                <i class="fa-solid fa-brain"></i> TumorVision
+                <i class="fa-solid fa-notes-medical"></i> TumorVision
             </div>
             <ul class="nav-links">
-                <li><a href="{{ url_for('index') }}" class="nav-item">Home</a></li>
-                <li><a href="{{ url_for('classify') }}" class="nav-item">Classification</a></li>
-                <li><a href="{{ url_for('segment') }}" class="nav-item">Segmentation</a></li>
-
-                <li><a href="{{ url_for('progress') }}" class="nav-item">Progress Tracking</a></li>
+                <li><a href="{{ url_for('index') }}" class="nav-item {% if request.path == url_for('index') %}active{% endif %}">Home</a></li>
+                <li><a href="{{ url_for('classify') }}" class="nav-item {% if request.path == url_for('classify') %}active{% endif %}">Classification</a></li>
+                <li><a href="{{ url_for('segment') }}" class="nav-item {% if request.path == url_for('segment') %}active{% endif %}">Segmentation</a></li>
+                <li><a href="{{ url_for('progress') }}" class="nav-item {% if request.path == url_for('progress') %}active{% endif %}">Comparison</a></li>
             </ul>
+
         </nav>
 
         <main class="content">
@@ -35,86 +35,82 @@
         </main>
 
         <footer>
-            <p>&copy; 2026 TumorVision.</p>
+            <p>&copy; 2026 TumorVision. Early Detection, Better Care.</p>
         </footer>
     </div>
 
-    <!-- Olmo AI Chatbot UI (Collapsed by default) -->
+    <!-- Olmo AI Chatbot UI (Collapsed by default, styled for Medical feel) -->
     <div id="olmo-chat" class="glass"
-        style="position: fixed; bottom: 1.5rem; right: 1.5rem; width: 340px; height: 500px; z-index: 1002; display: flex; flex-direction: column; border-radius: 20px; box-shadow: 0 12px 60px rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.15); overflow: hidden; transform: translateY(700px); transition: transform 0.5s cubic-bezier(0.19, 1, 0.22, 1);">
+        style="position: fixed; bottom: 1.5rem; right: 1.5rem; width: 340px; height: 500px; z-index: 1002; display: flex; flex-direction: column; overflow: hidden; transform: translateY(700px); transition: transform 0.5s cubic-bezier(0.19, 1, 0.22, 1);">
         <div
-            style="background: linear-gradient(135deg, var(--secondary), #0ea5e9); padding: 1.2rem; color: #000; font-weight: 700; display: flex; justify-content: space-between; align-items: center; cursor: default;">
-            <span style="display: flex; align-items: center; gap: 0.6rem;"><i class="fa-solid fa-robot"></i> Olmo
-                AI</span>
+            style="background: rgba(255, 255, 255, 0.05); border-bottom: 1px solid var(--border); padding: 1.2rem; color: var(--text-main); font-weight: 600; display: flex; justify-content: space-between; align-items: center; cursor: default;">
+            <span style="display: flex; align-items: center; gap: 0.6rem; color: var(--primary);"><i class="fa-solid fa-user-doctor"></i> Medical Assistant</span>
             <button onclick="toggleOlmo()"
-                style="background:rgba(0,0,0,0.1); border:none; border-radius: 50%; width: 28px; height: 28px; cursor:pointer; font-size: 0.9rem; display: flex; align-items: center; justify-content: center;"><i
+                style="background:rgba(255,255,255,0.1); border:none; border-radius: 50%; width: 28px; height: 28px; cursor:pointer; font-size: 0.9rem; display: flex; align-items: center; justify-content: center; color: var(--text-muted);"><i
                     class="fa-solid fa-chevron-down"></i></button>
         </div>
         <div id="olmo-messages" class="custom-scroll"
-            style="flex: 1; padding: 1.2rem; overflow-y: auto; display: flex; flex-direction: column; gap: 1rem; font-size: 0.9rem; background: rgba(5, 5, 16, 0.9);">
+            style="flex: 1; padding: 1.2rem; overflow-y: auto; display: flex; flex-direction: column; gap: 1rem; font-size: 0.9rem; background: transparent;">
             <div
-                style="padding: 0.8rem; background: rgba(255,255,255,0.05); border-radius: 12px; border-bottom-left-radius: 2px;">
-                Hi! I'm Olmo, your TumorVision assistant. I can help you understand 3D colors, classification
-                results, or track your progress. How can I help?
+                style="padding: 0.8rem; background: rgba(255, 255, 255, 0.08); border: 1px solid var(--border); border-radius: 12px; border-bottom-left-radius: 2px;">
+                Hello, I am the TumorVision assistant. I can help guide you through the process or explain your reports. How may I assist you today?
             </div>
             <div id="olmo-quick-actions" style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem;">
-                <button onclick="quickAsk('What do the 3D colors mean?')" class="quick-btn">3D Colors?</button>
-                <button onclick="quickAsk('How do I track progress?')" class="quick-btn">Progress Tracking?</button>
-                <button onclick="quickAsk('Tell me a joke')" class="quick-btn">Joke?</button>
+                <button onclick="quickAsk('How do I upload a scan?')" class="quick-btn">Upload Guide</button>
+                <button onclick="quickAsk('What types of tumors are detected?')" class="quick-btn">Tumor Types</button>
+                <button onclick="quickAsk('Are my scans private?')" class="quick-btn">Privacy</button>
             </div>
         </div>
         <div id="olmo-typing"
-            style="padding: 0.5rem 1.2rem; font-size: 0.8rem; color: #888; display: none; background: rgba(5, 5, 16, 0.9);">
-            Olmo is typing<span class="dot-animate">...</span>
+            style="padding: 0.5rem 1.2rem; font-size: 0.8rem; color: var(--text-muted); display: none; background: transparent;">
+            Assistant is typing<span class="dot-animate">...</span>
         </div>
         <div
-            style="padding: 1.2rem; border-top: 1px solid rgba(255,255,255,0.1); display: flex; gap: 0.6rem; background: rgba(15, 23, 42, 0.95);">
-            <input type="text" id="olmo-input" placeholder="Ask Olmo anything..."
-                style="flex: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 24px; padding: 0.6rem 1.2rem; color: white; outline: none;">
+            style="padding: 1.2rem; border-top: 1px solid var(--border); display: flex; gap: 0.6rem; background: transparent;">
+            <input type="text" id="olmo-input" placeholder="Ask a question..."
+                style="flex: 1; background: rgba(255, 255, 255, 0.1); border: 1px solid var(--border); border-radius: 24px; padding: 0.6rem 1.2rem; color: var(--text-main); outline: none;">
             <button onclick="sendOlmoMessage()"
-                style="background: var(--secondary); border: none; border-radius: 50%; width: 38px; height: 38px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #000; box-shadow: 0 2px 10px rgba(0,0,0,0.2);"><i
+                style="background: var(--primary); border: none; border-radius: 50%; width: 38px; height: 38px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #092621; box-shadow: 0 4px 10px rgba(196, 240, 116, 0.2);"><i
                     class="fa-solid fa-paper-plane"></i></button>
         </div>
     </div>
 
     <!-- Toggle Button -->
     <button id="olmo-btn" onclick="toggleOlmo()"
-        style="position: fixed; bottom: 2rem; right: 2rem; width: 60px; height: 60px; border-radius: 50%; background: var(--secondary); color: #000; border: none; font-size: 1.5rem; cursor: pointer; box-shadow: 0 6px 25px rgba(0,0,0,0.4); z-index: 1003; transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);">
-        <i class="fa-solid fa-message"></i>
+        style="position: fixed; bottom: 2rem; right: 2rem; width: 60px; height: 60px; border-radius: 50%; background: var(--primary); color: #092621; border: none; font-size: 1.5rem; cursor: pointer; box-shadow: 0 6px 25px rgba(196, 240, 116, 0.2); z-index: 1003; transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);">
+        <i class="fa-solid fa-comment-medical"></i>
     </button>
 
     <style>
         .custom-scroll::-webkit-scrollbar {
             width: 4px;
         }
-
         .custom-scroll::-webkit-scrollbar-track {
             background: transparent;
         }
-
         .custom-scroll::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(0, 0, 0, 0.1);
             border-radius: 10px;
         }
-
         .custom-scroll::-webkit-scrollbar-thumb:hover {
             background: var(--secondary);
         }
 
         .quick-btn {
             background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--border);
             border-radius: 12px;
-            padding: 0.3rem 0.6rem;
-            color: var(--secondary);
-            font-size: 0.75rem;
+            padding: 0.4rem 0.8rem;
+            color: var(--primary);
+            font-size: 0.8rem;
             cursor: pointer;
             transition: 0.2s;
+            font-weight: 500;
         }
 
         .quick-btn:hover {
-            background: rgba(34, 211, 238, 0.1);
-            border-color: var(--secondary);
+            background: rgba(196, 240, 116, 0.1);
+            border-color: var(--primary);
         }
 
         .dot-animate {
@@ -123,8 +119,9 @@
         }
 
         @keyframes dots {
-            content: "...";
-        }
+            0%, 20% { content: "."; }
+            40% { content: ".."; }
+            60%, 100% { content: "..."; }
         }
     </style>
 
@@ -136,7 +133,7 @@
             if (chat.style.transform === 'translateY(0px)') {
                 chat.style.transform = 'translateY(600px)';
                 btn.style.transform = 'scale(1) rotate(0deg)';
-                btn.innerHTML = '<i class="fa-solid fa-message"></i>';
+                btn.innerHTML = '<i class="fa-solid fa-comment-medical"></i>';
             } else {
                 chat.style.transform = 'translateY(0px)';
                 btn.style.transform = 'scale(0.9) rotate(-10deg)';
@@ -161,9 +158,9 @@
 
             // User Message
             const uDiv = document.createElement('div');
-            uDiv.style = "padding: 0.8rem; background: rgba(34, 211, 238, 0.15); border-radius: 12px; border-bottom-right-radius: 2px; align-self: flex-end; color: #fff; max-width: 85%; position: relative;";
+            uDiv.style = "padding: 0.8rem; background: var(--primary); border-radius: 12px; border-bottom-right-radius: 2px; align-self: flex-end; color: #092621; font-weight: 500; max-width: 85%; position: relative;";
             const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            uDiv.innerHTML = `${text}<br><span style="font-size: 0.65rem; opacity: 0.5; display: block; text-align: right; margin-top: 4px;">${time}</span>`;
+            uDiv.innerHTML = `${text}<br><span style="font-size: 0.65rem; opacity: 0.7; display: block; text-align: right; margin-top: 4px;">${time}</span>`;
             messages.appendChild(uDiv);
             input.value = '';
             messages.scrollTop = messages.scrollHeight;
@@ -183,9 +180,9 @@
                 setTimeout(() => {
                     typing.style.display = 'none';
                     const rDiv = document.createElement('div');
-                    rDiv.style = "padding: 0.8rem; background: rgba(255,255,255,0.05); border-radius: 12px; border-bottom-left-radius: 2px; align-self: flex-start; max-width: 85%; line-height: 1.4; color: #e2e8f0;";
+                    rDiv.style = "padding: 0.8rem; background: rgba(255, 255, 255, 0.08); border: 1px solid var(--border); border-radius: 12px; border-bottom-left-radius: 2px; align-self: flex-start; max-width: 85%; line-height: 1.4; color: var(--text-main);";
                     const botTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                    rDiv.innerHTML = `${data.response.replace(/\n/g, '<br>')}<br><span style="font-size: 0.65rem; opacity: 0.3; display: block; margin-top: 4px;">${botTime}</span>`;
+                    rDiv.innerHTML = `${data.response.replace(/\n/g, '<br>')}<br><span style="font-size: 0.65rem; opacity: 0.5; display: block; margin-top: 4px;">${botTime}</span>`;
                     messages.appendChild(rDiv);
                     messages.scrollTop = messages.scrollHeight;
                 }, 600);

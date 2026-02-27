@@ -90,8 +90,14 @@ function handleClassifyResult(data) {
 
     // Color logic: "No Tumor" is safe (Green), others are warnings (Red)
     const isSafe = label.toLowerCase().includes('no tumor');
-    predictionEl.style.color = isSafe ? '#10b981' : '#ef4444';
+    predictionEl.className = isSafe ? 'badge-success' : 'badge-warning';
+    
     confidenceEl.textContent = confidence;
+
+    const confidenceBar = document.getElementById('confidenceBar');
+    if (confidenceBar) {
+        confidenceBar.style.width = confidence;
+    }
 
     // Enable Report
     enableReportDownload('classifyForm', '/api/report_2d');
