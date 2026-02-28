@@ -1,4 +1,60 @@
 :root {
+    /* Medora Dark Teal & Lime Green Color Palette */
+    --primary: #C4F074;
+    --primary-hover: #ABDB5C;
+    --secondary: rgba(255, 255, 255, 0.15);
+    --bg-color: #092621;
+    --text-main: #FFFFFF;
+    --text-muted: #A1C5BE;
+    --nav-bg: rgba(9, 38, 33, 0.85);
+    --card-bg: rgba(255, 255, 255, 0.04);
+    --border: rgba(255, 255, 255, 0.08);
+
+    /* Badges */
+    --danger-bg: rgba(239, 68, 68, 0.15);
+    --danger-text: #FCA5A5;
+    --success-bg: rgba(34, 197, 94, 0.15);
+    --success-text: #86EFAC;
+}
+
+:root {
+    /* Medora Dark Teal & Lime Green Color Palette */
+    --primary: #C4F074;
+    --primary-hover: #ABDB5C;
+    --secondary: rgba(255, 255, 255, 0.15);
+    --bg-color: #092621;
+    --text-main: #FFFFFF;
+    --text-muted: #A1C5BE;
+    --nav-bg: rgba(9, 38, 33, 0.85);
+    --card-bg: rgba(255, 255, 255, 0.04);
+    --border: rgba(255, 255, 255, 0.08);
+
+    /* Badges */
+    --danger-bg: rgba(239, 68, 68, 0.15);
+    --danger-text: #FCA5A5;
+    --success-bg: rgba(34, 197, 94, 0.15);
+    --success-text: #86EFAC;
+
+    /* Transparencies for primary */
+    --primary-5: rgba(196, 240, 116, 0.05);
+    --primary-10: rgba(196, 240, 116, 0.1);
+    --primary-20: rgba(196, 240, 116, 0.2);
+    --primary-40: rgba(196, 240, 116, 0.4);
+
+    /* UI Overlays */
+    --overlay-5: rgba(255, 255, 255, 0.05);
+    --overlay-8: rgba(255, 255, 255, 0.08);
+    --overlay-10: rgba(255, 255, 255, 0.1);
+
+    /* Special colors */
+    --btn-primary-text: #092621;
+
+    /* Appends dynamically handled colors */
+    --danger-border: rgba(239, 68, 68, 0.3);
+    --success-border: rgba(34, 197, 94, 0.3);
+}
+
+[data-theme="light"] {
     /* Clinical Blue & Soft Cyan Color Palette */
     --primary: #0EA5E9;
     --primary-hover: #0284C7;
@@ -15,6 +71,23 @@
     --danger-text: #EF4444;
     --success-bg: #CCFBF1;
     --success-text: #14B8A6;
+
+    /* Transparencies for primary */
+    --primary-5: rgba(14, 165, 233, 0.05);
+    --primary-10: rgba(14, 165, 233, 0.1);
+    --primary-20: rgba(14, 165, 233, 0.2);
+    --primary-40: rgba(14, 165, 233, 0.4);
+
+    /* UI Overlays */
+    --overlay-5: rgba(30, 58, 138, 0.03);
+    --overlay-8: rgba(30, 58, 138, 0.05);
+    --overlay-10: rgba(30, 58, 138, 0.08);
+
+    /* Special colors */
+    --btn-primary-text: #FFFFFF;
+
+    --danger-border: rgba(239, 68, 68, 0.3);
+    --success-border: rgba(20, 184, 166, 0.3);
 }
 
 * {
@@ -25,7 +98,7 @@
 
 body {
     font-family: 'Inter', sans-serif;
-    background: linear-gradient(135deg, #91BDE0 0%, #D4E9F7 50%, #F0F7FB 100%);
+    background: linear-gradient(135deg, #092621 0%, #144940 100%);
     background-attachment: fixed;
     color: var(--text-main);
     min-height: 100vh;
@@ -123,23 +196,23 @@ footer {
 
 .btn-primary {
     background: var(--primary);
-    color: #FFFFFF;
+    color: var(--btn-primary-text);
 }
 
 .btn-primary:hover {
     background: var(--primary-hover);
     transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(14, 165, 233, 0.3);
+    box-shadow: 0 4px 15px var(--primary-20);
 }
 
 .btn-secondary {
     background: var(--secondary);
-    color: #FFFFFF;
-    border: 1px solid var(--secondary);
+    color: var(--text-main);
+    border: 1px solid var(--overlay-10);
 }
 
 .btn-secondary:hover {
-    background: #172554;
+    background: var(--overlay-10);
     transform: translateY(-2px);
 }
 
@@ -148,7 +221,7 @@ footer {
 .card {
     background: var(--card-bg);
     border-radius: 16px;
-    box-shadow: 0 8px 30px rgba(30, 58, 138, 0.06);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
     border: 1px solid var(--border);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
@@ -156,21 +229,21 @@ footer {
 
 /* File Upload */
 .upload-area {
-    border: 2px dashed #CBD5E1;
+    border: 2px dashed var(--overlay-10);
     border-radius: 16px;
     padding: 40px;
     text-align: center;
     transition: all 0.3s ease;
     cursor: pointer;
     margin-bottom: 2rem;
-    background: #FFFFFF;
+    background: var(--overlay-5);
     position: relative;
     overflow: hidden;
 }
 
 .upload-area:hover {
     border-color: var(--primary);
-    background: #F0F9FF;
+    background: var(--primary-5);
 }
 
 .upload-icon {
@@ -226,7 +299,7 @@ footer {
     border-radius: 12px;
     font-weight: 600;
     display: inline-block;
-    border: 1px solid rgba(239, 68, 68, 0.3);
+    border: 1px solid var(--danger-border);
 }
 
 .badge-success {
@@ -236,12 +309,12 @@ footer {
     border-radius: 12px;
     font-weight: 600;
     display: inline-block;
-    border: 1px solid rgba(34, 197, 94, 0.3);
+    border: 1px solid var(--success-border);
 }
 
 .progress-container {
     width: 100%;
-    background-color: #E2E8F0;
+    background-color: var(--border);
     border-radius: 12px;
     height: 12px;
     margin-top: 0.5rem;
@@ -256,4 +329,35 @@ footer {
     border-radius: 12px;
     width: 0%;
     transition: width 0.4s ease;
+}
+
+[data-theme="light"] body {
+    background: linear-gradient(135deg, #91BDE0 0%, #D4E9F7 50%, #F0F7FB 100%);
+}
+
+[data-theme="light"] .btn-secondary {
+    color: #FFFFFF;
+    border: 1px solid var(--secondary);
+}
+
+[data-theme="light"] .btn-secondary:hover {
+    background: #172554;
+}
+
+[data-theme="light"] .glass,
+[data-theme="light"] .card {
+    box-shadow: 0 8px 30px rgba(30, 58, 138, 0.06);
+}
+
+[data-theme="light"] .upload-area {
+    border: 2px dashed #CBD5E1;
+    background: #FFFFFF;
+}
+
+[data-theme="light"] .upload-area:hover {
+    background: #F0F9FF;
+}
+
+[data-theme="light"] .progress-container {
+    background-color: #E2E8F0;
 }

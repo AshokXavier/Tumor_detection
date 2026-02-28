@@ -130,7 +130,7 @@
                 content: '';
                 position: absolute;
                 inset: -10px;
-                border: 2px dashed rgba(14, 165, 233, 0.2);
+                border: 2px dashed var(--primary-20);
                 border-radius: 50%;
                 animation: spin-slow 20s linear infinite;
                 pointer-events: none;
@@ -142,8 +142,8 @@
                 left: 10%;
                 width: 80%;
                 height: 2px;
-                background: #0EA5E9;
-                box-shadow: 0 0 15px 3px #0EA5E9;
+                background: var(--primary);
+                box-shadow: 0 0 15px 3px var(--primary);
                 animation: scanline 3s linear infinite;
                 border-radius: 50%;
                 z-index: 10;
@@ -152,11 +152,11 @@
 
         <!-- Main Circular Hub -->
         <div class="animate-scanner"
-            style="width: 360px; height: 360px; border-radius: 50%; border: 1px solid rgba(14, 165, 233,0.05); display: flex; justify-content: center; align-items: center; position: relative; background: radial-gradient(circle, rgba(14, 165, 233, 0.05) 0%, transparent 70%);">
+            style="width: 360px; height: 360px; border-radius: 50%; border: 1px solid var(--overlay-5); display: flex; justify-content: center; align-items: center; position: relative; background: radial-gradient(circle, var(--primary-5) 0%, transparent 70%);">
             <div
                 style="width: 250px; height: 250px; border-radius: 50%; display: flex; justify-content: center; align-items: center; position: relative;">
                 <i class="fa-solid fa-brain"
-                    style="font-size: 10rem; color: #0EA5E9; text-shadow: 0 0 30px rgba(14, 165, 233, 0.5); z-index: 5;"></i>
+                    style="font-size: 10rem; color: var(--primary); text-shadow: 0 0 30px var(--primary-40); z-index: 5;"></i>
                 <div class="scanner-line"></div>
             </div>
         </div>
@@ -170,7 +170,7 @@
     <!-- Card 1 -->
     <div class="card" style="padding: 2.5rem; transition: transform 0.2s ease;">
         <div
-            style="width: 60px; height: 60px; background: rgba(14, 165, 233, 0.1); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem;">
+            style="width: 60px; height: 60px; background: var(--primary-10); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem;">
             <i class="fa-solid fa-image" style="font-size: 1.5rem; color: var(--primary);"></i>
         </div>
         <h3 style="margin-bottom: 0.5rem; color: var(--text-main);">Classification</h3>
@@ -183,7 +183,7 @@
     <!-- Card 2 -->
     <div class="card" style="padding: 2.5rem; transition: transform 0.2s ease;">
         <div
-            style="width: 60px; height: 60px; background: rgba(14, 165, 233, 0.1); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem;">
+            style="width: 60px; height: 60px; background: var(--primary-10); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem;">
             <i class="fa-solid fa-cubes" style="font-size: 1.5rem; color: var(--secondary);"></i>
         </div>
         <h3 style="margin-bottom: 0.5rem; color: var(--text-main);">Segmentation</h3>
@@ -196,7 +196,7 @@
     <!-- Card 3 -->
     <div class="card" style="padding: 2.5rem; transition: transform 0.2s ease;">
         <div
-            style="width: 60px; height: 60px; background: rgba(14, 165, 233, 0.1); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem;">
+            style="width: 60px; height: 60px; background: var(--primary-10); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem;">
             <i class="fa-solid fa-chart-line" style="font-size: 1.5rem; color: var(--primary);"></i>
         </div>
         <h3 style="margin-bottom: 0.5rem; color: var(--text-main);">Comparison</h3>

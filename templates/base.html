@@ -13,6 +13,10 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <!-- Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+    </script>
 </head>
 
 <body>
@@ -34,7 +38,10 @@
                         class="nav-item {% if request.path == url_for('progress') %}active{% endif %}">Comparison</a>
                 </li>
             </ul>
-
+            <button id="theme-btn" onclick="toggleTheme()" aria-label="Toggle Dark/Light Mode"
+                style="background: var(--overlay-5); border: 1px solid var(--overlay-10); font-size: 1.2rem; color: var(--text-main); cursor: pointer; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; transition: all 0.3s ease;">
+                <i class="fa-solid fa-sun" id="theme-icon"></i>
+            </button>
         </nav>
 
         <main class="content">
@@ -50,17 +57,17 @@
     <div id="olmo-chat" class="glass"
         style="position: fixed; bottom: 1.5rem; right: 1.5rem; width: 340px; height: 500px; z-index: 1002; display: flex; flex-direction: column; overflow: hidden; transform: translateY(700px); transition: transform 0.5s cubic-bezier(0.19, 1, 0.22, 1);">
         <div
-            style="background: rgba(14, 165, 233, 0.05); border-bottom: 1px solid var(--border); padding: 1.2rem; color: var(--text-main); font-weight: 600; display: flex; justify-content: space-between; align-items: center; cursor: default;">
+            style="background: var(--overlay-5); border-bottom: 1px solid var(--border); padding: 1.2rem; color: var(--text-main); font-weight: 600; display: flex; justify-content: space-between; align-items: center; cursor: default;">
             <span style="display: flex; align-items: center; gap: 0.6rem; color: var(--primary);"><i
                     class="fa-solid fa-user-doctor"></i> Medical Assistant</span>
             <button onclick="toggleOlmo()"
-                style="background:rgba(14, 165, 233,0.1); border:none; border-radius: 50%; width: 28px; height: 28px; cursor:pointer; font-size: 0.9rem; display: flex; align-items: center; justify-content: center; color: var(--text-muted);"><i
+                style="background:var(--overlay-10); border:none; border-radius: 50%; width: 28px; height: 28px; cursor:pointer; font-size: 0.9rem; display: flex; align-items: center; justify-content: center; color: var(--text-muted);"><i
                     class="fa-solid fa-chevron-down"></i></button>
         </div>
         <div id="olmo-messages" class="custom-scroll"
             style="flex: 1; padding: 1.2rem; overflow-y: auto; display: flex; flex-direction: column; gap: 1rem; font-size: 0.9rem; background: transparent;">
             <div
-                style="padding: 0.8rem; background: rgba(14, 165, 233, 0.08); border: 1px solid var(--border); border-radius: 12px; border-bottom-left-radius: 2px;">
+                style="padding: 0.8rem; background: var(--overlay-8); border: 1px solid var(--border); border-radius: 12px; border-bottom-left-radius: 2px;">
                 Hello, I am the TumorVision assistant. I can help guide you through the process or explain your reports.
                 How may I assist you today?
             </div>
@@ -77,16 +84,16 @@
         <div
             style="padding: 1.2rem; border-top: 1px solid var(--border); display: flex; gap: 0.6rem; background: transparent;">
             <input type="text" id="olmo-input" placeholder="Ask a question..."
-                style="flex: 1; background: rgba(14, 165, 233, 0.1); border: 1px solid var(--border); border-radius: 24px; padding: 0.6rem 1.2rem; color: var(--text-main); outline: none;">
+                style="flex: 1; background: var(--overlay-10); border: 1px solid var(--border); border-radius: 24px; padding: 0.6rem 1.2rem; color: var(--text-main); outline: none;">
             <button onclick="sendOlmoMessage()"
-                style="background: var(--primary); border: none; border-radius: 50%; width: 38px; height: 38px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #FFFFFF; box-shadow: 0 4px 10px rgba(14, 165, 233, 0.2);"><i
+                style="background: var(--primary); border: none; border-radius: 50%; width: 38px; height: 38px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--btn-primary-text); box-shadow: 0 4px 10px var(--primary-20);"><i
                     class="fa-solid fa-paper-plane"></i></button>
         </div>
     </div>
 
     <!-- Toggle Button -->
     <button id="olmo-btn" onclick="toggleOlmo()"
-        style="position: fixed; bottom: 2rem; right: 2rem; width: 60px; height: 60px; border-radius: 50%; background: var(--primary); color: #FFFFFF; border: none; font-size: 1.5rem; cursor: pointer; box-shadow: 0 6px 25px rgba(14, 165, 233, 0.3); z-index: 1003; transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);">
+        style="position: fixed; bottom: 2rem; right: 2rem; width: 60px; height: 60px; border-radius: 50%; background: var(--primary); color: var(--btn-primary-text); border: none; font-size: 1.5rem; cursor: pointer; box-shadow: 0 6px 25px var(--primary-20); z-index: 1003; transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);">
         <i class="fa-solid fa-comment-medical"></i>
     </button>
 
@@ -109,7 +116,7 @@
         }
 
         .quick-btn {
-            background: rgba(14, 165, 233, 0.05);
+            background: var(--overlay-5);
             border: 1px solid var(--border);
             border-radius: 12px;
             padding: 0.4rem 0.8rem;
@@ -121,7 +128,7 @@
         }
 
         .quick-btn:hover {
-            background: rgba(14, 165, 233, 0.1);
+            background: var(--primary-10);
             border-color: var(--primary);
         }
 
@@ -150,6 +157,31 @@
 
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
     <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+            updateThemeIcon(currentTheme);
+        });
+
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme);
+            window.dispatchEvent(new Event('theme-changed'));
+        }
+
+        function updateThemeIcon(theme) {
+            const icon = document.getElementById('theme-icon');
+            if (icon) {
+                if (theme === 'light') {
+                    icon.className = 'fa-solid fa-moon';
+                } else {
+                    icon.className = 'fa-solid fa-sun';
+                }
+            }
+        }
+
         function toggleOlmo() {
             const chat = document.getElementById('olmo-chat');
             const btn = document.getElementById('olmo-btn');
@@ -181,7 +213,7 @@
 
             // User Message
             const uDiv = document.createElement('div');
-            uDiv.style = "padding: 0.8rem; background: var(--primary); border-radius: 12px; border-bottom-right-radius: 2px; align-self: flex-end; color: #FFFFFF; font-weight: 500; max-width: 85%; position: relative;";
+            uDiv.style = "padding: 0.8rem; background: var(--primary); border-radius: 12px; border-bottom-right-radius: 2px; align-self: flex-end; color: var(--btn-primary-text); font-weight: 500; max-width: 85%; position: relative;";
             const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
             uDiv.innerHTML = `${text}<br><span style="font-size: 0.65rem; opacity: 0.7; display: block; text-align: right; margin-top: 4px;">${time}</span>`;
             messages.appendChild(uDiv);
@@ -203,7 +235,7 @@
                 setTimeout(() => {
                     typing.style.display = 'none';
                     const rDiv = document.createElement('div');
-                    rDiv.style = "padding: 0.8rem; background: rgba(14, 165, 233, 0.08); border: 1px solid var(--border); border-radius: 12px; border-bottom-left-radius: 2px; align-self: flex-start; max-width: 85%; line-height: 1.4; color: var(--text-main);";
+                    rDiv.style = "padding: 0.8rem; background: var(--overlay-8); border: 1px solid var(--border); border-radius: 12px; border-bottom-left-radius: 2px; align-self: flex-start; max-width: 85%; line-height: 1.4; color: var(--text-main);";
                     const botTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
                     rDiv.innerHTML = `${data.response.replace(/\n/g, '<br>')}<br><span style="font-size: 0.65rem; opacity: 0.5; display: block; margin-top: 4px;">${botTime}</span>`;
                     messages.appendChild(rDiv);

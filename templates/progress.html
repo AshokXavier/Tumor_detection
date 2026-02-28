@@ -79,7 +79,7 @@
         Array.from(fileInput.files).forEach(file => {
             const div = document.createElement('div');
             div.className = 'card';
-            div.style = "padding: 0.5rem 1rem; margin-bottom: 0.5rem; font-size: 0.9rem; border: 1px solid var(--border); background: rgba(14, 165, 233, 0.02); color: var(--text-main);";
+            div.style = "padding: 0.5rem 1rem; margin-bottom: 0.5rem; font-size: 0.9rem; border: 1px solid var(--border); background: var(--overlay-5); color: var(--text-main);";
             div.innerHTML = `<i class="fa-solid fa-file-medical" style="color: var(--primary);"></i> &nbsp;${file.name}`;
             fileListDisplay.appendChild(div);
         });
@@ -135,6 +135,11 @@
 
         if (chart) chart.destroy();
 
+        const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--primary').trim() || '#0ea5e9';
+        const primary10Color = getComputedStyle(document.documentElement).getPropertyValue('--primary-10').trim() || 'rgba(14, 165, 233, 0.1)';
+        const overlay5Color = getComputedStyle(document.documentElement).getPropertyValue('--overlay-5').trim() || 'rgba(0, 0, 0, 0.05)';
+        const textMutedColor = getComputedStyle(document.documentElement).getPropertyValue('--text-muted').trim() || '#64748b';
+
         chart = new Chart(ctx, {
             type: 'line',
             data: {
@@ -142,12 +147,12 @@
                 datasets: [{
                     label: 'Total Tumor Volume (cm³)',
                     data: values,
-                    borderColor: '#0EA5E9',
-                    backgroundColor: 'rgba(14, 165, 233, 0.1)',
+                    borderColor: primaryColor,
+                    backgroundColor: primary10Color,
                     fill: true,
                     tension: 0.4,
                     pointRadius: 6,
-                    pointBackgroundColor: '#0EA5E9'
+                    pointBackgroundColor: primaryColor
                 }]
             },
             options: {
@@ -156,20 +161,38 @@
                 scales: {
                     y: {
                         beginAtZero: true,
-                        grid: { color: 'rgba(14, 165, 233,0.05)' },
-                        ticks: { color: '#64748B' }
+                        grid: { color: overlay5Color },
+                        ticks: { color: textMutedColor }
                     },
                     x: {
                         grid: { display: false },
-                        ticks: { color: '#64748B' }
+                        ticks: { color: textMutedColor }
                     }
                 },
                 plugins: {
-                    legend: { labels: { color: '#FFFFFF', font: { family: 'Inter', weight: 500 } } }
+                    legend: { labels: { color: getComputedStyle(document.documentElement).getPropertyValue('--text-main').trim() || '#1e3a8a', font: { family: 'Inter', weight: 500 } } }
                 }
             }
         });
     }
+
+    window.addEventListener('theme-changed', () => {
+        if (chart) {
+            const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--primary').trim() || '#0ea5e9';
+            const primary10Color = getComputedStyle(document.documentElement).getPropertyValue('--primary-10').trim() || 'rgba(14, 165, 233, 0.1)';
+            const overlay5Color = getComputedStyle(document.documentElement).getPropertyValue('--overlay-5').trim() || 'rgba(0, 0, 0, 0.05)';
+            const textMutedColor = getComputedStyle(document.documentElement).getPropertyValue('--text-muted').trim() || '#64748b';
+
+            chart.data.datasets[0].borderColor = primaryColor;
+            chart.data.datasets[0].backgroundColor = primary10Color;
+            chart.data.datasets[0].pointBackgroundColor = primaryColor;
+            chart.options.scales.y.grid.color = overlay5Color;
+            chart.options.scales.y.ticks.color = textMutedColor;
+            chart.options.scales.x.ticks.color = textMutedColor;
+            chart.options.plugins.legend.labels.color = getComputedStyle(document.documentElement).getPropertyValue('--text-main').trim() || '#1e3a8a';
+            chart.update();
+        }
+    });
 
     function renderTable(results) {
         const container = document.getElementById('comparisonTableContainer');
@@ -179,7 +202,7 @@
 
         results.forEach((res, i) => {
             let changeHtml = '--';
-            let statusHtml = '<span class="status-badge" style="background:rgba(14, 165, 233,0.1); color:var(--text-main);">Baseline</span>';
+            let statusHtml = '<span class="status-badge" style="background:var(--overlay-10); color:var(--text-main);">Baseline</span>';
 
             // Safe Access Helper
             const getVol = (item) => {
@@ -199,12 +222,12 @@
                 }
 
                 const sign = change > 0 ? '+' : '';
-                const color = change > 0 ? '#EF4444' : '#14B8A6';
+                const color = change > 0 ? 'var(--danger-text)' : 'var(--success-text)';
                 changeHtml = `<span style="color:${color}; font-weight: 500;">${sign}${change.toFixed(2)}%</span>`;
 
                 statusHtml = change > 0
-                    ? '<span class="status-badge" style="background:var(--danger-bg); color:var(--danger-text); border: 1px solid rgba(239, 68, 68, 0.3);">Growth</span>'
-                    : '<span class="status-badge" style="background:var(--success-bg); color:var(--success-text); border: 1px solid rgba(20, 184, 166, 0.3);">Regression</span>';
+                    ? '<span class="status-badge" style="background:var(--danger-bg); color:var(--danger-text); border: 1px solid var(--danger-border);">Growth</span>'
+                    : '<span class="status-badge" style="background:var(--success-bg); color:var(--success-text); border: 1px solid var(--success-border);">Regression</span>';
             }
 
             const row = `
