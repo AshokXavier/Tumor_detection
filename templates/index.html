@@ -1,49 +1,162 @@
 {% extends "base.html" %}
 
 {% block content %}
-<section class="hero animate-fade-in" style="display: flex; flex-wrap: wrap; gap: 40px; align-items: center; margin-bottom: 80px; min-height: 60vh;">
+<section class="hero animate-fade-in"
+    style="display: flex; flex-wrap: wrap; gap: 40px; align-items: center; margin-bottom: 80px; min-height: 60vh;">
     <!-- Left Side -->
     <div style="flex: 1; min-width: 300px;">
-        <h1 style="font-size: 3.5rem; font-weight: 700; color: var(--text-main); line-height: 1.2; margin-bottom: 1rem;">
+        <h1
+            style="font-size: 3.5rem; font-weight: 700; color: var(--text-main); line-height: 1.2; margin-bottom: 1rem;">
             Early Detection,<br>Better Care
         </h1>
         <h2 style="font-size: 1.5rem; font-weight: 500; color: var(--primary); margin-bottom: 1.5rem;">
             AI-powered Brain Tumor Detection System
         </h2>
-        <p style="font-size: 1.1rem; color: var(--text-muted); max-width: 500px; margin-bottom: 2.5rem; line-height: 1.6;">
+        <p
+            style="font-size: 1.1rem; color: var(--text-muted); max-width: 500px; margin-bottom: 2.5rem; line-height: 1.6;">
             Upload MRI scans and receive accurate classification results using advanced deep learning models.
         </p>
-        <a href="{{ url_for('classify') }}" class="btn btn-primary" style="font-size: 1.1rem; padding: 1rem 2rem;">Start Detection</a>
+        <a href="{{ url_for('classify') }}" class="btn btn-primary" style="font-size: 1.1rem; padding: 1rem 2rem;">Start
+            Detection</a>
     </div>
 
     <!-- Right Side (Animated Dashboard Style) -->
-    <div style="flex: 1; min-width: 300px; display: flex; justify-content: center; align-items: center; position: relative;">
-        
+    <div
+        style="flex: 1; min-width: 300px; display: flex; justify-content: center; align-items: center; position: relative;">
+
         <style>
-        @keyframes floating1 { 0% { transform: translateY(0); } 50% { transform: translateY(-15px); } 100% { transform: translateY(0); } }
-        @keyframes floating2 { 0% { transform: translateY(0); } 50% { transform: translateY(12px); } 100% { transform: translateY(0); } }
-        @keyframes floating3 { 0% { transform: translateY(0); } 50% { transform: translateY(-8px); } 100% { transform: translateY(0); } }
-        @keyframes pulse-dot { 0% { transform: scale(0.95); opacity: 0.8; } 50% { transform: scale(1.1); opacity: 1; } 100% { transform: scale(0.95); opacity: 0.8; } }
-        @keyframes scanline { 0% { top: 0; opacity: 0;} 10% { opacity: 1;} 90% { opacity: 1;} 100% { top: 100%; opacity: 0; } }
-        @keyframes spin-slow { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+            @keyframes floating1 {
+                0% {
+                    transform: translateY(0);
+                }
 
-        .floating-elem-1 { animation: floating1 4s ease-in-out infinite; }
-        .floating-elem-2 { animation: floating2 5s ease-in-out infinite; }
-        .floating-elem-3 { animation: floating3 3s ease-in-out infinite; }
+                50% {
+                    transform: translateY(-15px);
+                }
 
-        .animate-scanner::before {
-            content: ''; position: absolute; inset: -10px; border: 2px dashed rgba(196, 240, 116, 0.2); border-radius: 50%; animation: spin-slow 20s linear infinite; pointer-events: none;
-        }
+                100% {
+                    transform: translateY(0);
+                }
+            }
 
-        .scanner-line {
-            position: absolute; top: 0; left: 10%; width: 80%; height: 2px; background: var(--primary); box-shadow: 0 0 15px 3px var(--primary); animation: scanline 3s linear infinite; border-radius: 50%; z-index: 10;
-        }
+            @keyframes floating2 {
+                0% {
+                    transform: translateY(0);
+                }
+
+                50% {
+                    transform: translateY(12px);
+                }
+
+                100% {
+                    transform: translateY(0);
+                }
+            }
+
+            @keyframes floating3 {
+                0% {
+                    transform: translateY(0);
+                }
+
+                50% {
+                    transform: translateY(-8px);
+                }
+
+                100% {
+                    transform: translateY(0);
+                }
+            }
+
+            @keyframes pulse-dot {
+                0% {
+                    transform: scale(0.95);
+                    opacity: 0.8;
+                }
+
+                50% {
+                    transform: scale(1.1);
+                    opacity: 1;
+                }
+
+                100% {
+                    transform: scale(0.95);
+                    opacity: 0.8;
+                }
+            }
+
+            @keyframes scanline {
+                0% {
+                    top: 0;
+                    opacity: 0;
+                }
+
+                10% {
+                    opacity: 1;
+                }
+
+                90% {
+                    opacity: 1;
+                }
+
+                100% {
+                    top: 100%;
+                    opacity: 0;
+                }
+            }
+
+            @keyframes spin-slow {
+                0% {
+                    transform: rotate(0deg);
+                }
+
+                100% {
+                    transform: rotate(360deg);
+                }
+            }
+
+            .floating-elem-1 {
+                animation: floating1 4s ease-in-out infinite;
+            }
+
+            .floating-elem-2 {
+                animation: floating2 5s ease-in-out infinite;
+            }
+
+            .floating-elem-3 {
+                animation: floating3 3s ease-in-out infinite;
+            }
+
+            .animate-scanner::before {
+                content: '';
+                position: absolute;
+                inset: -10px;
+                border: 2px dashed rgba(14, 165, 233, 0.2);
+                border-radius: 50%;
+                animation: spin-slow 20s linear infinite;
+                pointer-events: none;
+            }
+
+            .scanner-line {
+                position: absolute;
+                top: 0;
+                left: 10%;
+                width: 80%;
+                height: 2px;
+                background: #0EA5E9;
+                box-shadow: 0 0 15px 3px #0EA5E9;
+                animation: scanline 3s linear infinite;
+                border-radius: 50%;
+                z-index: 10;
+            }
         </style>
 
         <!-- Main Circular Hub -->
-        <div class="animate-scanner" style="width: 360px; height: 360px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: center; align-items: center; position: relative; background: radial-gradient(circle, rgba(196, 240, 116, 0.05) 0%, transparent 70%);">
-            <div style="width: 250px; height: 250px; border-radius: 50%; display: flex; justify-content: center; align-items: center; position: relative;">
-                <i class="fa-solid fa-brain" style="font-size: 10rem; color: var(--primary); text-shadow: 0 0 30px rgba(196, 240, 116, 0.4); z-index: 5;"></i>
+        <div class="animate-scanner"
+            style="width: 360px; height: 360px; border-radius: 50%; border: 1px solid rgba(14, 165, 233,0.05); display: flex; justify-content: center; align-items: center; position: relative; background: radial-gradient(circle, rgba(14, 165, 233, 0.05) 0%, transparent 70%);">
+            <div
+                style="width: 250px; height: 250px; border-radius: 50%; display: flex; justify-content: center; align-items: center; position: relative;">
+                <i class="fa-solid fa-brain"
+                    style="font-size: 10rem; color: #0EA5E9; text-shadow: 0 0 30px rgba(14, 165, 233, 0.5); z-index: 5;"></i>
                 <div class="scanner-line"></div>
             </div>
         </div>
@@ -52,10 +165,12 @@
 </section>
 
 <!-- Additional Functional Links (Retained for accessibility, restyled) -->
-<section class="features-grid animate-fade-in" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px;">
+<section class="features-grid animate-fade-in"
+    style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px;">
     <!-- Card 1 -->
     <div class="card" style="padding: 2.5rem; transition: transform 0.2s ease;">
-        <div style="width: 60px; height: 60px; background: rgba(196, 240, 116, 0.1); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem;">
+        <div
+            style="width: 60px; height: 60px; background: rgba(14, 165, 233, 0.1); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem;">
             <i class="fa-solid fa-image" style="font-size: 1.5rem; color: var(--primary);"></i>
         </div>
         <h3 style="margin-bottom: 0.5rem; color: var(--text-main);">Classification</h3>
@@ -67,7 +182,8 @@
 
     <!-- Card 2 -->
     <div class="card" style="padding: 2.5rem; transition: transform 0.2s ease;">
-        <div style="width: 60px; height: 60px; background: rgba(196, 240, 116, 0.1); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem;">
+        <div
+            style="width: 60px; height: 60px; background: rgba(14, 165, 233, 0.1); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem;">
             <i class="fa-solid fa-cubes" style="font-size: 1.5rem; color: var(--secondary);"></i>
         </div>
         <h3 style="margin-bottom: 0.5rem; color: var(--text-main);">Segmentation</h3>
@@ -79,7 +195,8 @@
 
     <!-- Card 3 -->
     <div class="card" style="padding: 2.5rem; transition: transform 0.2s ease;">
-        <div style="width: 60px; height: 60px; background: rgba(196, 240, 116, 0.1); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem;">
+        <div
+            style="width: 60px; height: 60px; background: rgba(14, 165, 233, 0.1); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem;">
             <i class="fa-solid fa-chart-line" style="font-size: 1.5rem; color: var(--primary);"></i>
         </div>
         <h3 style="margin-bottom: 0.5rem; color: var(--text-main);">Comparison</h3>

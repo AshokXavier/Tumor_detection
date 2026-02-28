@@ -35,7 +35,7 @@
             <!-- Slice Viewer -->
             <div class="card" style="flex: 1; padding: 1.5rem; border-radius: 16px; min-width: 300px; box-shadow: 0 4px 20px rgba(0,0,0,0.03); border: 1px solid var(--border);">
 
-                <div style="background: rgba(255, 255, 255, 0.02); min-height: 400px; display: flex; align-items: center; justify-content: center; border-radius: 12px; overflow: hidden; position: relative;"
+                <div style="background: rgba(14, 165, 233, 0.02); min-height: 400px; display: flex; align-items: center; justify-content: center; border-radius: 12px; overflow: hidden; position: relative;"
                     id="sliceCanvasContainer">
                     <img id="sliceImage" src="" alt="Segmentation Prediction"
                         style="max-width: 100%; max-height: 400px; object-fit: contain; display: none; border-radius: 12px;">
@@ -47,7 +47,7 @@
             <div class="card" style="flex: 1; padding: 1.5rem; border-radius: 16px; min-width: 300px; box-shadow: 0 4px 20px rgba(0,0,0,0.03); border: 1px solid var(--border);">
                 <h4 style="margin-bottom: 1rem; color: var(--text-main);"><i class="fa-solid fa-cube"></i> &nbsp;3D Interactive Model</h4>
                 <div id="meshContainer"
-                    style="background: rgba(255, 255, 255, 0.02); height: 400px; border-radius: 12px; overflow: hidden; position: relative;">
+                    style="background: rgba(14, 165, 233, 0.02); height: 400px; border-radius: 12px; overflow: hidden; position: relative;">
                     <!-- Three.js Canvas will go here -->
                 </div>
                 <div
@@ -58,7 +58,7 @@
                     </div>
                     <div style="display: flex; align-items: center; gap: 0.4rem;">
                         <span
-                            style="width: 12px; height: 12px; background: rgba(255,255,255,0.1); border: 1px solid var(--border); border-radius: 2px;"></span>
+                            style="width: 12px; height: 12px; background: rgba(14, 165, 233,0.1); border: 1px solid var(--border); border-radius: 2px;"></span>
                         Whole Brain
                     </div>
                     <div style="display: flex; align-items: center; gap: 0.4rem;">
@@ -80,28 +80,28 @@
             <h4 style="margin-bottom: 2rem; color: var(--text-main); text-align: center;"><i class="fa-solid fa-chart-pie"></i> &nbsp;Tumor Metrics</h4>
             
             <div style="display: flex; flex-wrap: wrap; gap: 1rem; justify-content: space-evenly; text-align: center;">
-                <div style="padding: 1.5rem; background: rgba(255,255,255,0.02); border-radius: 12px; border: 1px solid var(--border); flex: 1; min-width: 200px;">
+                <div style="padding: 1.5rem; background: rgba(14, 165, 233,0.02); border-radius: 12px; border: 1px solid var(--border); flex: 1; min-width: 200px;">
                     <p style="color: var(--text-muted); font-size: 0.9rem; font-weight: 500; margin-bottom: 0.5rem;">Total Tumor Volume</p>
                     <p style="font-size: 2.2rem; font-weight: 700; color: var(--primary);">
                         <span id="totalVolume">--</span> <span style="font-size: 1.1rem;">cm³</span>
                     </p>
                 </div>
 
-                <div style="padding: 1.5rem; background: rgba(255,255,255,0.02); border-radius: 12px; border: 1px solid var(--border); flex: 1; min-width: 200px;">
+                <div style="padding: 1.5rem; background: rgba(14, 165, 233,0.02); border-radius: 12px; border: 1px solid var(--border); flex: 1; min-width: 200px;">
                     <p style="color: #ef4444; font-size: 0.95rem; margin-bottom: 0.5rem; font-weight: 600;">Enhancing Tumor</p>
                     <p style="font-size: 1.6rem; font-weight: 600; color: var(--text-main);">
                         <span id="enhancingVolume">--</span> <span style="font-size: 1rem; color: var(--text-muted);">cm³</span>
                     </p>
                 </div>
                 
-                <div style="padding: 1.5rem; background: rgba(255,255,255,0.02); border-radius: 12px; border: 1px solid var(--border); flex: 1; min-width: 200px;">
+                <div style="padding: 1.5rem; background: rgba(14, 165, 233,0.02); border-radius: 12px; border: 1px solid var(--border); flex: 1; min-width: 200px;">
                     <p style="color: #eab308; font-size: 0.95rem; margin-bottom: 0.5rem; font-weight: 600;">Edema</p>
                     <p style="font-size: 1.6rem; font-weight: 600; color: var(--text-main);">
                         <span id="edemaVolume">--</span> <span style="font-size: 1rem; color: var(--text-muted);">cm³</span>
                     </p>
                 </div>
 
-                <div style="padding: 1.5rem; background: rgba(255,255,255,0.02); border-radius: 12px; border: 1px solid var(--border); flex: 1; min-width: 200px;">
+                <div style="padding: 1.5rem; background: rgba(14, 165, 233,0.02); border-radius: 12px; border: 1px solid var(--border); flex: 1; min-width: 200px;">
                     <p style="color: #06b6d4; font-size: 0.95rem; margin-bottom: 0.5rem; font-weight: 600;">Necrotic / Non-enhancing</p>
                     <p style="font-size: 1.6rem; font-weight: 600; color: var(--text-main);">
                         <span id="necroticVolume">--</span> <span style="font-size: 1rem; color: var(--text-muted);">cm³</span>
@@ -115,7 +115,7 @@
         <button type="button" class="btn btn-secondary" onclick="window.location.reload()">Upload Another</button>
 
         <button id="downloadReportBtn" class="btn"
-            style="background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border); color: var(--text-main); display: none;">
+            style="background: rgba(14, 165, 233, 0.05); border: 1px solid var(--border); color: var(--text-main); display: none;">
             <i class="fa-solid fa-file-pdf" style="color: var(--danger-text);"></i> &nbsp;Download Medical Report
         </button>
     </div>
