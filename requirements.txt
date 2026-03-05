@@ -10,3 +10,4 @@ gunicorn
 scikit-image
 fpdf
 huggingface_hub
+python-dotenv

@@ -1,0 +1,215 @@
+{% extends "base.html" %}
+
+{% block title %}Nearby Specialists - TumorVision{% endblock %}
+
+{% block content %}
+<div class="animate-fade-in" style="max-width: 1000px; margin: 0 auto; padding: 2rem;">
+    <div style="margin-bottom: 3rem; text-align: center;">
+        <h1
+            style="font-size: 2.5rem; margin-bottom: 1rem; background: linear-gradient(135deg, #fff, var(--secondary)); background-clip: text; -webkit-background-clip: text; color: transparent; -webkit-text-fill-color: transparent;">
+            Find Nearby Specialists
+        </h1>
+        <p style="color: var(--text-muted); font-size: 1.1rem;">
+            Connecting you with top neurologists and oncologists in your area.
+        </p>
+    </div>
+
+    <!-- Search Bar -->
+    <div class="glass"
+        style="padding: 1.5rem; border-radius: 16px; margin-bottom: 2rem; display: flex; gap: 1rem; align-items: center;">
+        <div style="flex: 1; position: relative;">
+            <i class="fa-solid fa-magnifying-glass"
+                style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--text-muted);"></i>
+            <input type="text" id="manual-location-input"
+                placeholder="Enter city or address (e.g. New York, Alappuzha...)"
+                style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 0.8rem 1rem 0.8rem 2.8rem; color: white; outline: none; transition: 0.3s;">
+        </div>
+        <button onclick="handleManualSearch()" class="btn btn-primary" style="padding: 0.8rem 1.5rem;">
+            Search Location
+        </button>
+    </div>
+
+    <!-- Location Status -->
+    <div id="location-status" class="glass"
+        style="padding: 1.5rem; border-radius: 16px; margin-bottom: 2rem; display: flex; align-items: center; gap: 1rem; border-left: 4px solid var(--secondary);">
+        <i class="fa-solid fa-location-dot" style="font-size: 1.5rem; color: var(--secondary);"></i>
+        <div>
+            <h4 id="status-text">Detecting your location...</h4>
+            <p id="status-subtext" style="font-size: 0.85rem; color: var(--text-muted);">Please allow location access in
+                your browser.</p>
+        </div>
+    </div>
+
+    <!-- Search Button (Hidden initially) -->
+    <div id="manual-search" style="display: none; text-align: center; margin-bottom: 2rem;">
+        <button onclick="getLocation()" class="btn btn-primary">
+            <i class="fa-solid fa-arrows-rotate"></i> Retry Location Access
+        </button>
+    </div>
+
+    <!-- Results Grid -->
+    <div id="doctors-grid"
+        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem;">
+        <!-- Loading skeletons will go here -->
+    </div>
+
+    <!-- No Results Message -->
+    <div id="no-results" style="display: none; text-align: center; padding: 4rem;">
+        <i class="fa-solid fa-user-doctor" style="font-size: 3rem; color: var(--text-muted); margin-bottom: 1rem;"></i>
+        <h3>No specialized clinics found nearby.</h3>
+        <p style="color: var(--text-muted);">Try increasing the search radius or checking your connection.</p>
+    </div>
+</div>
+
+<style>
+    .doctor-card {
+        padding: 1.5rem;
+        border-radius: 16px;
+        transition: all 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        height: 100%;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .doctor-card:hover {
+        transform: translateY(-5px);
+        border-color: var(--secondary);
+        box-shadow: 0 10px 30px rgba(34, 211, 238, 0.1);
+    }
+
+    .rating-badge {
+        background: rgba(34, 211, 238, 0.1);
+        color: var(--secondary);
+        padding: 0.2rem 0.6rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+    }
+
+    .type-tag {
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--text-muted);
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+</style>
+
+<script>
+    function getLocation() {
+        const statusText = document.getElementById('status-text');
+        const statusSub = document.getElementById('status-subtext');
+        const manualSearch = document.getElementById('manual-search');
+
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    statusText.innerText = "Location Detected";
+                    statusSub.innerText = `Searching specialists near you...`;
+                    manualSearch.style.display = 'none';
+                    fetchDoctors(position.coords.latitude, position.coords.longitude);
+                },
+                (error) => {
+                    statusText.innerText = "Location Access Denied";
+                    statusSub.innerText = "We need your location to find nearby clinics.";
+                    manualSearch.style.display = 'block';
+                }
+            );
+        } else {
+            statusText.innerText = "Geolocation Not Supported";
+            statusSub.innerText = "Your browser does not support location services.";
+        }
+    }
+
+    function handleManualSearch() {
+        const query = document.getElementById('manual-location-input').value.trim();
+        if (!query) return;
+
+        const statusText = document.getElementById('status-text');
+        const statusSub = document.getElementById('status-subtext');
+
+        statusText.innerText = `Searching in ${query}`;
+        statusSub.innerText = "Finding specialized clinics...";
+
+        fetchDoctors(null, null, query);
+    }
+
+    async function fetchDoctors(lat, lng, cityQuery = null) {
+        const grid = document.getElementById('doctors-grid');
+        grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 2rem;"><i class="fa-solid fa-spinner fa-spin" style="font-size: 2rem; color: var(--secondary);"></i></div>';
+
+        try {
+            let url = '/api/nearby_doctors?';
+            if (cityQuery) {
+                url += `query=${encodeURIComponent(cityQuery)}`;
+            } else if (lat && lng) {
+                url += `lat=${lat}&lng=${lng}`;
+            }
+            const response = await fetch(url);
+            const data = await response.json();
+
+            if (data.error) {
+                grid.innerHTML = `<div class="glass" style="grid-column: 1/-1; padding: 2rem; color: #ff4444; border-radius: 12px; text-align:center;">${data.error}</div>`;
+                return;
+            }
+
+            if (!data.doctors || data.doctors.length === 0) {
+                grid.innerHTML = '';
+                document.getElementById('no-results').style.display = 'block';
+                return;
+            }
+
+            grid.innerHTML = '';
+            document.getElementById('no-results').style.display = 'none';
+            document.getElementById('status-text').innerText = "Top Specialists Found";
+            document.getElementById('status-subtext').innerText = `Found ${data.doctors.length} specialists in your area.`;
+
+            data.doctors.forEach(doc => {
+                const card = document.createElement('div');
+                card.className = 'glass doctor-card';
+
+                // Better type labeling
+                let typeLabel = "Specialist";
+                if (doc.types.includes('hospital')) typeLabel = "Medical Center";
+                if (doc.types.includes('neurologist')) typeLabel = "Neurologist";
+                if (doc.types.includes('oncologist')) typeLabel = "Oncology Specialist";
+
+                card.innerHTML = `
+                    <div>
+                        <span class="type-tag">${typeLabel}</span>
+                        <h3 style="margin-bottom: 0.5rem; font-size: 1.2rem;">${doc.name}</h3>
+                        <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0.5rem;">
+                            <i class="fa-solid fa-map-marker-alt" style="margin-right: 0.5rem; color: var(--secondary);"></i>${doc.address}
+                        </p>
+                        <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1rem;">
+                            <i class="fa-solid fa-phone" style="margin-right: 0.5rem; color: var(--secondary);"></i>${doc.phone}
+                        </p>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem;">
+                        <span class="rating-badge">
+                            <i class="fa-solid fa-star"></i> ${doc.rating === 'N/A' ? 'New' : doc.rating}
+                        </span>
+                        <a href="${doc.link}" target="_blank" class="btn btn-primary" style="padding: 0.4rem 1rem; font-size: 0.85rem;">
+                            View on Maps
+                        </a>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+
+        } catch (e) {
+            console.error(e);
+            grid.innerHTML = '<div class="glass" style="grid-column: 1/-1; padding: 2rem; color: #ff4444; border-radius: 12px; text-align:center;">Failed to connect to search service.</div>';
+        }
+    }
+
+    // Start detection on load
+    window.onload = getLocation;
+</script>
+{% endblock %}

@@ -1,3 +1,8 @@
+from dotenv import load_dotenv
+import os
+# Load environment variables from .env file
+load_dotenv()
+
 from flask import Flask, render_template, request, jsonify, send_file
 import numpy as np
 import tensorflow as tf
@@ -11,6 +16,7 @@ from utils import load_models, preprocess_image_2d, preprocess_volume_3d, calcul
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
 app.config['MAX_CONTENT_LENGTH'] = 500 * 1024 * 1024  # 500MB max upload
+app.config['GOOGLE_API_KEY'] = os.getenv('GOOGLE_PLACES_API_KEY')
 
 # Ensure upload directory exists
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
@@ -406,6 +412,101 @@ def api_chat_olmo():
         return jsonify({'response': response})
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+@app.route('/doctors')
+def doctors_page():
+    return render_template('doctors.html')
+
+@app.route('/api/nearby_doctors')
+def api_nearby_doctors():
+    try:
+        lat = request.args.get('lat')
+        lng = request.args.get('lng')
+        query = request.args.get('query')
+        # Default radius 5km if not specified
+        radius = 20000
+        
+        api_key = app.config.get('GOOGLE_API_KEY')
+        if not api_key or api_key == 'YOUR_API_KEY_HERE':
+            return jsonify({'error': 'Google API Key not configured. Please add it to your environment variables or Space Secrets.'}), 500
+
+        import requests
+        
+        # Google Places API (New) Text Search - Better for specific specialties
+        url = "https://places.googleapis.com/v1/places:searchText"
+        
+        headers = {
+            "Content-Type": "application/json",
+            "X-Goog-Api-Key": api_key,
+            "X-Goog-FieldMask": "places.displayName,places.formattedAddress,places.rating,places.googleMapsUri,places.types,places.nationalPhoneNumber,places.location"
+        }
+        
+        # Determine Search Query and Location Bias
+        if query:
+            text_query = f"best neurologists and oncology specialists in {query}"
+            location_bias = None
+        else:
+            text_query = "best neurologists and oncology specialists"
+            location_bias = {
+                "circle": {
+                    "center": {
+                        "latitude": float(lat) if lat else 0.0,
+                        "longitude": float(lng) if lng else 0.0
+                    },
+                    "radius": float(radius)
+                }
+            }
+
+        payload = {
+            "textQuery": text_query,
+            "maxResultCount": 10
+        }
+        
+        if location_bias and lat and lng:
+            payload["locationBias"] = location_bias
+
+        response = requests.post(url, json=payload, headers=headers)
+        data = response.json()
+        
+        if 'error' in data:
+            return jsonify({'error': f"Google API Error: {data['error'].get('message', 'Unknown error')}"}), 500
+
+        if 'places' not in data:
+            return jsonify({'doctors': [], 'message': 'No specialists found nearby.'})
+            
+        results = []
+        user_lat = float(lat) if lat else None
+        user_lng = float(lng) if lng else None
+
+        for place in data['places']:
+            loc = place.get('location', {})
+            p_lat = loc.get('latitude')
+            p_lng = loc.get('longitude')
+            
+            # Simple distance calculation (Euclidean approximation for small distances)
+            distance = 99999
+            if p_lat and p_lng and user_lat is not None and user_lng is not None:
+                distance = ((p_lat - user_lat)**2 + (p_lng - user_lng)**2)**0.5
+
+            results.append({
+                'name': place.get('displayName', {}).get('text', 'N/A'),
+                'address': place.get('formattedAddress', 'N/A'),
+                'phone': place.get('nationalPhoneNumber', 'No phone listed'),
+                'rating': place.get('rating', 'N/A'),
+                'link': place.get('googleMapsUri', '#'),
+                'types': place.get('types', []),
+                'distance': distance
+            })
+            
+        # Sort by distance
+        results.sort(key=lambda x: x['distance'])
+            
+        return jsonify({'doctors': results})
+
+    except Exception as e:
+        print(f"Nearby Doctors Error: {e}")
+        traceback.print_exc()
+        return jsonify({'error': str(e)}), 500
+
 
 if __name__ == '__main__':
     app.run(debug=True, port=7860)

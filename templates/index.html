@@ -205,5 +205,18 @@
         </p>
         <a href="{{ url_for('progress') }}" class="btn btn-primary" style="width: 100%;">Start Comparison</a>
     </div>
+    <!-- Card 4 -->
+    <div class="glass card" style="padding: 2rem; border-radius: 16px; transition: transform 0.3s ease;">
+        <div class="icon-bg"
+            style="width: 60px; height: 60px; background: rgba(20, 184, 166, 0.1); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem;">
+            <i class="fa-solid fa-user-doctor" style="font-size: 1.5rem; color: #14b8a6;"></i>
+        </div>
+        <h3 style="margin-bottom: 0.5rem;">Find Specialists</h3>
+        <p style="color: var(--text-muted); margin-bottom: 1.5rem;">
+            Locate top neurologists and specialized clinics near your current location.
+        </p>
+        <a href="{{ url_for('doctors_page') }}" class="btn btn-primary">Find Doctors <i class="fa-solid fa-location-dot"
+                style="margin-left: 0.5rem;"></i></a>
+    </div>
 </section>
 {% endblock %}
